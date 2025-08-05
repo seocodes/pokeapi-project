@@ -1,0 +1,52 @@
+<?php
+    // Tipo de resposta = JSON
+    header('Content-Type: application/json');
+
+    // Resposta padrão do backend: 
+    $response = [
+        "success" => false,
+        "name" => "Pokémon não encontrado",
+        "id" => "",
+        "type" => "",
+        "description" => "Tente outro nome.",
+        "image" => "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png"
+    ];
+
+    echo(json_encode($response));
+
+    if(!empty($_GET("pokemon_name"))){
+        $searchName = strtolower(trim($_GET["name"]));
+
+        // Coloca o nome no fim da URL, definindo assim a rota que vamos pegar as informações
+        $url = "https://pokeapi.co/api/v2/pokemon/" . $searchName;
+
+        // Curl é usado para fazer a conexão HTTP
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $apiResponse = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        curl_close($ch);
+    }
+
+    // Se for bem sucedido e ter resposta (code 200), pega as informações json e decoda
+    if($httpCode == 200){
+        $pokemonData = json_decode($apiResponse, true);
+
+        $pokemonName = ucfirst($pokemonData['name']);
+        $pokemonId = ucfirst($pokemonData['id']);
+        $pokemonType = ucfirst($pokemonData['types'][0]['type']['name']);
+        $pokemonImage = ucfirst($pokemonData['sprites'][other]['official-artwork']['front_defaul']);
+        
+        $response = [
+            "success" => true,
+            "name" => $pokemonName,
+            "id" => $pokemonId,
+            "type" => $pokemonType,
+            "description" => "Descrição",
+            "image" => $pokemonImage
+        ];
+    }
+?>
+
