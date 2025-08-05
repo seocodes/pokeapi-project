@@ -24,13 +24,14 @@ document.getElementById('search-form').addEventListener('submit', function(event
     fetch(`backend.php?pokemon_name=${pokemonName}`) // O que está dentro das chaves é o pokemonName = form.elements['pokemon_name'].value;
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             // Se a requisição der certo vai cair aqui
             if(data.success){
                 pokemonImage.src = data.image;
                 pokemonNameElement.textContent = data.name;
                 pokemonIdElement.textContent = `N°: ${data.id}`;
                 pokemonTypeElement.textContent = `Tipo: ${data.type}`;
-                pokemonDescriptionElement = data.description;
+                pokemonDescriptionElement.textContent = data.description;
             }
             else{
                 pokemonImage.src = data.image;
