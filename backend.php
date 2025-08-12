@@ -1,6 +1,7 @@
 <?php
     // Tipo de resposta = JSON
     header('Content-Type: application/json');
+    header('Acess-Control-Allow-Origin: *');
 
     // Resposta padrão do backend: 
     $response = array(
