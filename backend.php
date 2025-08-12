@@ -2,6 +2,8 @@
     // Tipo de resposta = JSON
     header('Content-Type: application/json');
     header('Acess-Control-Allow-Origin: *');
+    header('Acess-Control-Allow-Methods: GET, POST, OPTIONS');
+    header('Acess-Control-Allow-Headers: Content-Type, Authorization');
 
     // Resposta padrão do backend: 
     $response = array(
@@ -25,6 +27,7 @@
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         $apiResponse = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
