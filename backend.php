@@ -41,15 +41,40 @@
         $pokemonId = $pokemonData['id'];
         $pokemonType = ucfirst($pokemonData['types'][0]['type']['name']);
         $pokemonImage = $pokemonData['sprites']['other']['official-artwork']['front_default'];
+        $speciesUrl = $pokemonData['species']['url'];
+
+        $ch = curl_init();
         
+        curl_setopt($ch, CURLOPT_URL, $speciesUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        $speciesResponse = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        curl_close($ch);
+
+        $speciesData = json_decode($speciesResponse, true);
+
+        $description = "Descrição não encontrada";
+
+        foreach($speciesData['flavor_text_entries'] as $entry){
+            if ($entry['language']['name'] == 'en'){
+                $description = $entry['flavor_text'];
+                break;
+            }
+        }
+
+        $pokemonDescription = str_replace(array("\n", "\f"), " ", $description);
         $response = array(
             "success" => true,
             "name" => $pokemonName,
             "id" => $pokemonId,
             "type" => $pokemonType,
-            "description" => "Descrição não disponível via API oficial.",
+            "description" => $pokemonDescription,
             "image" => $pokemonImage
         );
+
     } else {
         $response['description'] = "Erro HTTP: $httpCode";
     }
